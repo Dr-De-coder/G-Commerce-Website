@@ -3,7 +3,8 @@ import {
    register,
    login,
    logout,
-   getUser
+   getUser,
+   forgotPassword
 } from "../controllers/authController.js";
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
 
@@ -13,6 +14,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/me", isAuthenticated, getUser);
 router.get("/logout", isAuthenticated, logout);
+router.post("/password/forgot", forgotPassword);
 
 
 export default router;
