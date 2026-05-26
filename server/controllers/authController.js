@@ -81,12 +81,12 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler("User not found with this email.", 404));
     }
     const user = userResult.rows[0];
-    const { hashedToken, resetPasswordExpiraTime, resetToken } =
+    const { hashedToken, resetPasswordExpireTime, resetToken } =
         generateResetPasswordToken();
 
     await database.query(
-        `UPDATE users SET reset_password_token = $1, reset_password_expires = to_timestamp($2) WHERE email = $3`,
-        [hashedToken, resetPasswordExpiraTime / 1000, email]
+        `UPDATE users SET reset_password_token = $1, reset_password_expire = to_timestamp($2) WHERE email = $3`,
+        [hashedToken, resetPasswordExpireTime / 1000, email]
     );
 
     const resetPasswordUrl = `${frontendUrl}/password/reset/${resetToken}`;
