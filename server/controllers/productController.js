@@ -13,10 +13,10 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
         );
     }
 
-    let uploadedImage = [];
+    let uploadedImages = [];
     if (req.files && req.files.images) {
-        const image = Array.isArray(req.files.images)
-            ? req.files.image
+        const images = Array.isArray(req.files.images)
+            ? req.files.images
             : [req.files.images];
 
         for (const image of images) {
@@ -35,7 +35,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
     const product = await database.query(
         `INSERT INTO products (name, description, price, category, stock, images, created_by) VALUES ($1, $2, $3,
-        $4, $5, $6, $7) RETURNING *`, [name, description, price, category, stock, JSON.stringify(uploadedImages),created_by,]
+        $4, $5, $6, $7) RETURNING *`, [name, description, price / 282, category, stock, JSON.stringify(uploadedImages),created_by,]
     );
 
     res.status(201).json({
