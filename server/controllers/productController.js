@@ -18,7 +18,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
         const images = Array.isArray(req.files.images)
             ? req.files.images
             : [req.files.images];
-
+        
         for (const image of images) {
             const result = await cloudinary.uploader.upload(image.tempFilePath, {
                 folder : "Ecommerce_Product_Images",
@@ -31,6 +31,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
                 public_id: result.public_id,
             });
         }
+        
     }
 
     const product = await database.query(

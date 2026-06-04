@@ -28,9 +28,10 @@ app.use(express.urlencoded({ extended: true}));
 app.use(
     fileUpload({
         tempFileDir: "./upload",
-        useTempFiles: true,
+        useTempFiles: true
     })
 )
+
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
