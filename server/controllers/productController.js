@@ -141,7 +141,7 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
         FROM products p
         LEFT JOIN reviews r ON p.id = r.product_id
         WHERE p.created_at >= NOW() - INTERVAL '30 days'
-        GROUP BY p.id,
+        GROUP BY p.id
         ORDER BY p.created_at DESC
         LIMIT 8
     `
@@ -154,18 +154,18 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
         COUNT(r.id) AS review_count
         FROM products p
         LEFT JOIN reviews r ON p.id = r.product_id
-        WHERE p.rating >= 4.5
-        GROUP BY p.id,
+        WHERE p.ratingS >= 4.5
+        GROUP BY p.id
         ORDER BY p.created_at DESC
         LIMIT 8
     `;
-    const newProductsResult = await database.query(newProductsQuery);
+    const topRatedResults = await database.query(topRatedQuery);
 
     res.status(200).json({
         success: true,
         products: result.rows,
         totalProducts,
-        newPrducts: newProductsResult.rows,
+        newProducts: newProductsResult.rows,
         topRatedProducts: topRatedResults.rows,
     });
 
