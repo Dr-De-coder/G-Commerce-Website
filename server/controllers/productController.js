@@ -172,6 +172,7 @@ export const fetchAllProducts = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateProduct = catchAsyncErrors(async (req, res, next) => {
+    
     const { productId } = req.params;
     const { name, description, price, category, stock } = req.body;
 
@@ -182,15 +183,15 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
 
     }
 
-    const product = await database.query("SELECT * FROM product WHERE id = $1", [
+    const product = await database.query("SELECT * FROM products WHERE id = $1", [
         productId,
     ]);
     if(product.rows.length === 0){
         return next(new ErrorHandler("Product not found.", 404));
     }
     const result = await database.query(
-        'UPDATE products SET name = $1, description = $2, price = $3, category = $4, stock = $5 WHERE id = $6
-        RETURNING *',
+        `UPDATE products SET name = $1, description = $2, price = $3, category = $4, stock = $5 WHERE id = $6
+        RETURNING *`,
         [name, description, price /283, category, stock, productId]
     );
     res.status(200).json({
