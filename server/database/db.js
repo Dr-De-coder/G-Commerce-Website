@@ -9,7 +9,7 @@ const database = new Client({
     port: 5432,
 });
 
-console.log("Dbbbbbbbb: ", database)
+
 
 try {
     await database.connect();

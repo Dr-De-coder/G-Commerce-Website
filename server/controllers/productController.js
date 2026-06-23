@@ -385,6 +385,7 @@ export const deleteReview = catchAsyncErrors(async(req, res, next) => {
 });
 
 export const fetchAIFilteredProducts = catchAsyncErrors(async (req, res, next) => {
+    
     const { userPrompt } = req.body;
 
     if (!userPrompt) {
@@ -503,7 +504,8 @@ export const fetchAIFilteredProducts = catchAsyncErrors(async (req, res, next) =
     }
 
     //STEP 2: AI FILTERING
-    const {success, products} = await getAIRecommendation(req, res, userPrompt, filteredProducts);
+    const { success, products } =
+    await getAIRecommendation(userPrompt, filteredProducts);
 
     res.status(200).json({
         success: success,
