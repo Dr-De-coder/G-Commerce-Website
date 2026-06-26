@@ -94,6 +94,18 @@ export const dashboardStats = catchAsyncErrors(async (req, res, next) => {
         orderStatusCounts[row.order_status] = parseInt(row, count);
     });
 
+    //Today's revenue section
+
+    const todayRevenueQuery = await database.query(
+        `
+        SELECT SUM(total_price) FROM orders
+        WHERE created_at::date = $1
+        `,
+        [todayDate]
+    );
+
+    const todayRevenue = parseFloat(todayRevenueQuery.rows[0].sum) || 0;
+
     //yesterday's Revenue
     const yesterdayRevenueQuery = await database.query(
         `
@@ -122,7 +134,7 @@ export const dashboardStats = catchAsyncErrors(async (req, res, next) => {
     //top 5 Most Sold Products
     const topSellingProductsQuery = await database.query(`
         SELECT p.name,
-        p.image->0->>'url' AS image,
+        p.images->0->>'url' AS image,
         p.category,
         p.ratings,
         SUM(oi.quantity) AS total_sold
@@ -140,7 +152,7 @@ export const dashboardStats = catchAsyncErrors(async (req, res, next) => {
         `
             SELECT SUM(total_price) AS total
             FROM orders
-            WHERE create_at BETWEEN $1 AND $2)
+            WHERE created_at BETWEEN $1 AND $2
             `,
         [currentMonthStart, currentMonthEnd]
     );
@@ -149,7 +161,7 @@ export const dashboardStats = catchAsyncErrors(async (req, res, next) => {
 
     //Products with stock less than or equal to 5
     const lowStockProductsQuery = await database.query(`
-        SELEECT name, stock FROM products WHERE stock <= 5
+        SELECT name, stock FROM products WHERE stock <= 5
         `);
 
     const lowStockProducts = lowStockProductsQuery.rows;
@@ -174,8 +186,8 @@ export const dashboardStats = catchAsyncErrors(async (req, res, next) => {
     }
 
     //new Users this month
-    const newUsesThisMonthQuery = await database.query(`
-        SELECT COUNT(*) FROM users WHERE created_at >= $1
+    const newUsersThisMonthQuery = await database.query(`
+        SELECT COUNT(*) FROM users WHERE created_at >= $1 AND role = 'User'
         `,[currentMonthStart]);
 
     const newUsersThisMonth = parseInt(newUsersThisMonthQuery.rows[0].count) || 0;
